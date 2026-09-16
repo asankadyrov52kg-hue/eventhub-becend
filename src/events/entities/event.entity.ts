@@ -12,8 +12,8 @@ export class Event extends BaseEntity {
   @Column({ type: 'text' })
   description!: string;
 
-  @Column()
-  date!: string;
+  @Column({type:'timestamp'})
+  date!: Date;
 
   @Column()
   address!: string;
@@ -24,8 +24,8 @@ export class Event extends BaseEntity {
   @Column({ type: 'int' })
   capacity!: number;
 
-  @Column({ nullable: true })
-  image!: string; 
+  @Column({type:'varchar', nullable: true })
+  image?: string | null; 
 
 
   @ManyToOne(() => User, (user) => user.events, { onDelete: 'CASCADE' })
@@ -37,8 +37,8 @@ export class Event extends BaseEntity {
   @ManyToOne(() => Category, (category) => category.events, { onDelete: 'RESTRICT' })
   category!: Category;
 
-  @Column()
-  categoryId!: string;
+  @Column({nullable:true})
+  categoryId?: string | null;
 
   @OneToMany(() => Registration, (registration) => registration.event)
   registrations!: Registration[];
