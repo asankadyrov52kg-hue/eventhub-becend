@@ -1,26 +1,32 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Injectable, ConflictException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+  ) {}
+
+  // 1. Получение списка всех категорий (по алфавиту)
+  async findAll(): Promise<Category[]> {
+    return await this.categoryRepository.find({
+      order: { name: 'ASC' },
+    });
   }
 
-  findAll() {
-    return `This action returns all categories`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
-
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  // 2. Метод для создания (пригодится, чтобы наполнить базу через Postman)
+  async create(name: string): Promise<Category> {
+    const category = this.categoryRepository.create({ name });
+    try {
+      return await this.categoryRepository.save(category);
+    } catch (error) {
+      if ((error as any).code === '23505') { // Твоя любимая ошибка уникальности :)
+        throw new ConflictException('Такая категория уже существует');
+      }
+      throw error;
+    }
   }
 }
