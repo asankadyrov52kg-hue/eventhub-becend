@@ -7,7 +7,7 @@ import { Registration } from 'src/registration/entities/registration.entity';
 @Entity('events')
 export class Event extends BaseEntity {
   @Column()
-  title!: string;
+  title?: string;
 
   @Column({ type: 'text' })
   description!: string;

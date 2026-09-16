@@ -20,14 +20,24 @@ export class EventsService {
     return await this.eventRepository.save(newEvent);
   }
 
-  async findAll(): Promise<Event[]> {
+//   async findAll(): Promise<Event[]> {
+//   return await this.eventRepository.find({
+//     relations: {
+//       category: true,
+//     },
+//     order: { date: 'ASC' },
+//   });
+// }
+async findAll(categoryId?: string): Promise<Event[]> {
   return await this.eventRepository.find({
+    where: categoryId ? { categoryId } : {},
     relations: {
       category: true,
     },
     order: { date: 'ASC' },
   });
 }
+
 async findOne(id: string): Promise<Event> {
   const event = await this.eventRepository.findOne({
     where: { id },

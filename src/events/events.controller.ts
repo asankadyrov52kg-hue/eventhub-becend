@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
@@ -12,13 +12,17 @@ export class EventsController {
   @UseGuards(AccessTokenGuard) 
   create(@Body() createEventDto: CreateEventDto, @Req() req: any) {
     const userId = req.user.id; 
+    console.log('=== ДЕБАГ КОНТРОЛЛЕРА ===');
+  console.log('Юзер ID из гварда:', userId);
+  console.log('Тело запроса (DTO):', createEventDto);
     return this.eventsService.create(createEventDto, userId);
   }
 
   @Get()
-  findAll() {
-    return this.eventsService.findAll();
-  }
+async findAll(@Query('categoryId') categoryId?: string) {
+  return await this.eventsService.findAll(categoryId);
+}
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {

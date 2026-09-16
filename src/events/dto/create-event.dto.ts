@@ -32,5 +32,6 @@ export class CreateEventDto {
   @IsUUID('4', { message: 'Некорректный ID категории' })
   @IsNotEmpty({ message: 'Категория обязательна' })
   categoryId!: string;
+  
 }
 
