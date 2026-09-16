@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
-import { AuthModule } from './registrations/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getTypeOrmConfig } from './confiq/typeorm.config';
