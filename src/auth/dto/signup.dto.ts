@@ -1,18 +1,19 @@
 
-import { IsNotEmpty, IsString, Length } from "class-validator"
+import { IsNotEmpty, IsString, Length, IsEmail } from "class-validator"
 
 export class SignupDTO {
-    @IsString()
-    @IsNotEmpty()
-    @Length(2, 50)
+    @IsEmail({}, { message: 'Введите корректный email адрес (например, user@mail.com)' })
+    @IsString({ message: 'Email должен быть строкой' })
+    @IsNotEmpty({ message: 'Поле email обязательно для заполнения' })
+    @Length(2, 30, { message: 'Email должен содержать от 2 до 10 символов' })
     email!: string
 
-    @IsNotEmpty()
-    @IsString()
+    @IsString({ message: 'Имя должно быть строкой' })
+    @IsNotEmpty({ message: 'Поле fullname обязательно для заполнения' })
     fullname!: string
 
-    @IsString()
-    @IsNotEmpty()
-    @Length(8, 100)
+    @IsString({ message: 'Пароль должен быть строкой' })
+    @IsNotEmpty({ message: 'Поле пароль обязательно для заполнения' })
+    @Length(8, 100, { message: 'Пароль должен быть от 8 до 100 символов' })
     password!: string
 }

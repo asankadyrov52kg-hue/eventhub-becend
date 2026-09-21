@@ -12,22 +12,16 @@ export class EventsService {
     private readonly eventRepository: Repository<Event>,
   ) {}
 
-  async create(createEventDto: CreateEventDto, userId: string): Promise<Event> {
+    async create(createEventDto: CreateEventDto, userId: string, imageUrl: string | null): Promise<Event> {
     const newEvent = this.eventRepository.create({
       ...createEventDto,
       userId,
+      image: imageUrl, 
     });
     return await this.eventRepository.save(newEvent);
   }
 
-//   async findAll(): Promise<Event[]> {
-//   return await this.eventRepository.find({
-//     relations: {
-//       category: true,
-//     },
-//     order: { date: 'ASC' },
-//   });
-// }
+
 async findAll(categoryId?: string): Promise<Event[]> {
   return await this.eventRepository.find({
     where: categoryId ? { categoryId } : {},
