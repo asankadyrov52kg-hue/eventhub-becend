@@ -3,18 +3,16 @@ import {
   Column,CreateDateColumn,ManyToOne,JoinColumn } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Event } from 'src/events/entities/event.entity';
+import { BaseEntity } from 'src/helpers/base.entity';
 
 @Entity('registrations')
-export class Registration {
+export class Registration extends BaseEntity {
   
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
   @Column({ type: 'uuid' }) 
   userId!: string;
   @Column({ type: 'uuid' })
   eventId!: string;
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt!: Date;
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' }) 
   user!: User;

@@ -24,32 +24,43 @@ export class UsersService {
   async updateRefreshToken(userId: string, refreshTokenHash?: string) {
     const existUser = await this.findOne(userId)
     if (existUser) {
-      return this.userRepository.update(userId, { refresh_token_hash: refreshTokenHash })
+  
+      await this.userRepository.update(userId, { refresh_token_hash: refreshTokenHash })
+      return;
     }
     throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND)
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
-  findUserByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({
-      where: {
-        email
-      }
+  async findUserByEmail(email: string): Promise<User | null> {
+    return await this.userRepository.findOne({
+      where: { email }
     })
   }
 
-  findOne(id: string) {
-    return this.userRepository.findOneBy({ id })
+  async findOne(id: string): Promise<User | null> {
+    return await this.userRepository.findOneBy({ id })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND);
+    }
+    
+    const updatedUser = this.userRepository.merge(user, updateUserDto);
+    return await this.userRepository.save(updatedUser);
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<{ deleted: boolean }> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND);
+    }
+    
+    await this.userRepository.remove(user);
+    return { deleted: true };
   }
 }

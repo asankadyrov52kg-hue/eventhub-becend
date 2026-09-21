@@ -1,9 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UsersService } from "src/users/users.service";
 import { SignupDTO } from "./dto/signup.dto";
 import * as bcrypt from "bcrypt"
 import { SigninDTO } from "./dto/signin.dto";
+
+
 
 @Injectable()
 export class AuthService {
@@ -17,7 +19,6 @@ export class AuthService {
         const createdUser = await this.userService.create({...dto, password_hash})
         
         const tokens = await this.getTokens(createdUser.id, createdUser.email)
-
         await this.updateRefreshToken(createdUser.id, tokens.refreshToken)
 
         return tokens
@@ -26,11 +27,17 @@ export class AuthService {
     async signin(dto: SigninDTO) {
         const existUser = await this.userService.findUserByEmail(dto.email)
         console.log("TEST", existUser)
-        if (!existUser) throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND)
+        
+        if (!existUser) {
+            throw new UnauthorizedException('Неверный email или пароль');
+        }
         
         const passwordMatches = await bcrypt.compare(dto.password, existUser.password_hash)
         console.log("TEST2", passwordMatches)
-        if (!passwordMatches) throw new HttpException("Неверный пароль", HttpStatus.UNAUTHORIZED)
+        
+        if (!passwordMatches) {
+            throw new UnauthorizedException('Неверный email или пароль');
+        }
 
         const tokens = await this.getTokens(existUser.id, existUser.email)
         console.log("TEST3", tokens)
@@ -67,5 +74,3 @@ export class AuthService {
         return { accessToken, refreshToken }
     }
 }
-
-
