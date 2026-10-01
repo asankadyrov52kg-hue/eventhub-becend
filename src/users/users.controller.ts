@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { 
   ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags 
-} from '@nestjs/swagger'; // Импортируем декораторы Swagger
+} from '@nestjs/swagger'; 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@ApiTags('Users (Пользователи)') // Группировка в Swagger UI
+@ApiTags('Users (Пользователи)') 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UsersService) {}

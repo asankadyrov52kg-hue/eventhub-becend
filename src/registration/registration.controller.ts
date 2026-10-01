@@ -1,6 +1,6 @@
-import { Controller, Post, Get, Body, UseGuards, Req, Query, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Req, Query, HttpCode, HttpStatus,Delete, Param} from '@nestjs/common';
 import { 
-  ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags 
+  ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags, ApiParam
 } from '@nestjs/swagger'; 
 import { RegistrationsService } from './registration.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -32,7 +32,15 @@ export class RegistrationsController {
     const userId = req.user.id;
     return this.registrationsService.findByUserId(userId);
   }
-
+  @Delete(':id')
+  @ApiOperation({ summary: 'Отменить запись на мероприятие по ID регистрации' })
+  @ApiParam({ name: 'id', description: 'UUID регистрации' })
+  @ApiResponse({ status: 200, description: 'Запись успешно отменена.' })
+  @ApiResponse({ status: 401, description: 'Пользователь не авторизован.' })
+  @ApiResponse({ status: 404, description: 'Регистрация не найдена.' })
+  async remove(@Param('id') id: string) {
+    return this.registrationsService.remove(id);
+  }
   @Get('check')
   @ApiOperation({ summary: 'Проверить, зарегистрирован ли текущий пользователь на конкретное мероприятие' })
   @ApiQuery({ 
